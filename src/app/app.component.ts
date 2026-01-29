@@ -49,27 +49,30 @@ export class AppComponent {
   }
 
   closeModal(event?: Event): void {
-    if (!event || (event.target as HTMLElement).classList.contains('modal-overlay')) {
+    if (
+      !event ||
+      (event.target as HTMLElement).classList.contains('modal-overlay')
+    ) {
       this.isModalOpen = false;
     }
   }
 
   searchPokemon(): void {
-    let url = `http://localhost:3030/api/cards?limit=30`;
-    if (this.searchName) url += `&name=${this.searchName}`;
-    if (this.searchType) url += `&type=${this.searchType}`;
+  this.http.get<any>('mock/cards.json').subscribe((res) => {
+    const cards = res.cards || [];
 
-    this.http.get<any>(url).subscribe((res) => {
-      const cards = res.cards || [];
-      this.searchResult = cards.filter(
-        (card: Pokemon) => !this.myPokedex.some((p) => p.id === card.id)
-      );
-    });
-  }
+    this.searchResult = cards.filter(
+      (card: Pokemon) =>
+        !this.myPokedex.some((p) => p.id === card.id)
+    );
+  });
+}
 
   addPokemon(pokemon: Pokemon): void {
     this.myPokedex.push(pokemon);
-    this.searchResult = this.searchResult.filter((p) => p.id !== pokemon.id);
+    this.searchResult = this.searchResult.filter(
+      (p) => p.id !== pokemon.id
+    );
   }
 
   removePokemon(id: string): void {
@@ -77,26 +80,24 @@ export class AppComponent {
   }
 
   getHP(pokemon: Pokemon): number {
-    const hp = parseInt(pokemon.hp || '0');
+    const hp = parseInt(pokemon.hp || '0', 10);
     return hp > 100 ? 100 : hp;
   }
 
   getStrength(pokemon: Pokemon): number {
-    const attackCount = pokemon.attacks?.length || 0;
-    const str = attackCount * 50;
-    return str > 100 ? 100 : str;
+    const count = pokemon.attacks?.length || 0;
+    return Math.min(count * 50, 100);
   }
 
   getWeakness(pokemon: Pokemon): number {
-    const weakCount = pokemon.weaknesses?.length || 0;
-    const weak = weakCount * 100;
-    return weak > 100 ? 100 : weak;
+    const count = pokemon.weaknesses?.length || 0;
+    return Math.min(count * 100, 100);
   }
 
   getDamage(pokemon: Pokemon): number {
     if (!pokemon.attacks) return 0;
     return pokemon.attacks.reduce((total, atk) => {
-      const val = parseInt(atk.damage.replace(/[^0-9]/g, '')) || 0;
+      const val = parseInt(atk.damage.replace(/[^0-9]/g, ''), 10) || 0;
       return total + val;
     }, 0);
   }
@@ -105,6 +106,7 @@ export class AppComponent {
     const hp = this.getHP(pokemon);
     const damage = this.getDamage(pokemon);
     const weakness = pokemon.weaknesses?.length || 0;
+
     const happiness = ((hp / 10) + (damage / 10) + 10 - weakness) / 5;
     return Math.max(0, Math.round(happiness));
   }
