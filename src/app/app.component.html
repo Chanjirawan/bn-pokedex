@@ -1,60 +1,155 @@
 <div id="root">
- <header class="header">
-    <h1>My Pokédex</h1>
-    <button class="add-btn" (click)="openModal()">
-      Add Pokémon
-    </button>
-  </header>
+  <div class="app-container">
+    <header class="header">
+      <h1>My Pokédex</h1>
+    </header>
+    <main class="pokedex-list">
+      <div class="pokemon-card" *ngFor="let p of myPokedex">
+        <img [src]="p.imageUrl" alt="pokemon" class="card-img" />
 
-  <section class="pokedex-list">
-    <div
-      class="pokemon-card"
-      *ngFor="let pokemon of myPokedex"
-    >
-      <img [src]="pokemon.imageUrl"
-      alt="{{ pokemon.name }}" />
-      <h3>{{ pokemon.name }}</h3>
+        <div class="card-content">
+          <div class="card-header">
+            <h3>{{ p.name | uppercase }}</h3>
+            <button
+              class="action-text"
+              aria-label="remove pokemon"
+              (click)="removePokemon(p.id)">
+              X
+            </button>
+          </div>
 
-      <button (click)="removePokemon(pokemon.id)">
-        Remove
-      </button>
-    </div>
-  </section>
+          <div class="stats-container">
+            <!-- HP -->
+            <div class="stat-row">
+              <span>HP</span>
+              <div class="bar-bg">
+                <div
+                  class="bar-fill"
+                  [style.width.%]="getHP(p)">
+                </div>
+              </div>
+            </div>
 
-  <div
-    class="modal-overlay"
-    *ngIf="isModalOpen"
-    (click)="closeModal($event)"
-  >
-    <div class="modal">
-      <input
-        type="text"
-        placeholder="Search by name"
-        [(ngModel)]="searchName"
-        (input)="searchPokemon()"
-      />
+            <div class="stat-row">
+              <span>STR</span>
+              <div class="bar-bg">
+                <div
+                  class="bar-fill"
+                  [style.width.%]="getStrength(p)">
+                </div>
+              </div>
+            </div>
 
-      <input
-        type="text"
-        placeholder="Search by type"
-        [(ngModel)]="searchType"
-        (input)="searchPokemon()"
-      />
+            <div class="stat-row">
+              <span>WEAK</span>
+              <div class="bar-bg">
+                <div
+                  class="bar-fill"
+                  [style.width.%]="getWeakness(p)">
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <div class="search-result">
-        <div
-          class="pokemon-card"
-          *ngFor="let pokemon of searchResult"
-        >
-          <img [src]="pokemon.imageUrl" />
-          <h4>{{ pokemon.name }}</h4>
-
-          <button (click)="addPokemon(pokemon)">
-            Add
-          </button>
+          <div class="happiness-icons">
+            <img
+              src="assets/cute.png"
+              alt="happiness"
+              *ngFor="let h of getHappinessArray(p)"
+              width="20" />
+          </div>
         </div>
       </div>
+    </main>
+
+    <footer class="bottom-bar">
+      <div class="plus-circle" (click)="openModal()">+</div>
+    </footer>
+
+    <div
+      class="modal-overlay"
+      *ngIf="isModalOpen"
+      (click)="closeModal($event)">
+
+      <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="search-input-wrapper">
+          <input
+            type="text"
+            placeholder="Find Pokémon"
+            [(ngModel)]="searchName"
+            (input)="searchPokemon()" />
+          <img
+            src="assets/search.png"
+            alt="search"
+            class="search-icon" />
+        </div>
+
+        <div class="search-results">
+          <div class="search-item" *ngFor="let p of searchResult">
+
+            <img
+              [src]="p.imageUrl"
+              alt="pokemon"
+              class="search-img" />
+
+            <div class="search-info">
+              <div class="search-header">
+                <h3>{{ p.name | uppercase }}</h3>
+                <button
+                  class="add-text"
+                  aria-label="add pokemon"
+                  (click)="addPokemon(p)">
+                  Add
+                </button>
+              </div>
+
+              <div class="stats-container">
+                <div class="stat-row">
+                  <span>HP</span>
+                  <div class="bar-bg">
+                    <div
+                      class="bar-fill"
+                      [style.width.%]="getHP(p)">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="stat-row">
+                  <span>STR</span>
+                  <div class="bar-bg">
+                    <div
+                      class="bar-fill"
+                      [style.width.%]="getStrength(p)">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="stat-row">
+                  <span>WEAK</span>
+                  <div class="bar-bg">
+                    <div
+                      class="bar-fill"
+                      [style.width.%]="getWeakness(p)">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="happiness-icons">
+                  <img
+                    src="assets/cute.png"
+                    alt="happiness"
+                    *ngFor="let h of getHappinessArray(p)"
+                    width="20" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
     </div>
+
   </div>
 </div>
-
