@@ -49,7 +49,6 @@ export class AppComponent {
   }
 
   closeModal(event?: Event): void {
-    // ปิดเมื่อคลิก overlay หรือเรียกใช้โดยตรง
     if (!event || (event.target as HTMLElement).classList.contains('modal-overlay')) {
       this.isModalOpen = false;
     }
@@ -61,8 +60,7 @@ export class AppComponent {
     if (this.searchType) url += `&type=${this.searchType}`;
 
     this.http.get<any>(url).subscribe((res) => {
-      const cards = res.cards || []; // ปกติ API จะคืนค่าเป็น cards
-      // กรองเฉพาะตัวที่ยังไม่อยู่ใน Pokedex
+      const cards = res.cards || [];
       this.searchResult = cards.filter(
         (card: Pokemon) => !this.myPokedex.some((p) => p.id === card.id)
       );
@@ -78,7 +76,6 @@ export class AppComponent {
     this.myPokedex = this.myPokedex.filter((p) => p.id !== id);
   }
 
-  // --- Logic คำนวณตามโจทย์ ---
   getHP(pokemon: Pokemon): number {
     const hp = parseInt(pokemon.hp || '0');
     return hp > 100 ? 100 : hp;
@@ -107,12 +104,11 @@ export class AppComponent {
   getHappiness(pokemon: Pokemon): number {
     const hp = this.getHP(pokemon);
     const damage = this.getDamage(pokemon);
-    const weakness = pokemon.weaknesses?.length || 0; // ใช้จำนวนตามสูตรตัวอย่าง
+    const weakness = pokemon.weaknesses?.length || 0;
     const happiness = ((hp / 10) + (damage / 10) + 10 - weakness) / 5;
     return Math.max(0, Math.round(happiness));
   }
 
-  // สร้าง Array สำหรับวน Loop แสดงรูปหัวใจ/หน้ายิ้ม
   getHappinessArray(pokemon: Pokemon): any[] {
     return new Array(this.getHappiness(pokemon));
   }
