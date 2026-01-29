@@ -139,10 +139,11 @@ $searchboxborder: #e6e6e6;
   width: 800px;
   height: 600px;
   background: white;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 0px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .search-input-wrapper {
@@ -150,20 +151,23 @@ $searchboxborder: #e6e6e6;
   margin-bottom: 20px;
 
   input {
-    width: 100%;
-    padding: 12px 40px 12px 15px;
-    border: 1px solid $searchboxborder;
-    font-size: 22px;
-    outline: none;
-    font-family: 'Atma', cursive;
-  }
-
+      width: 100%;
+      padding: 4px 45px 4px 0px;
+      border: 1px solid $searchboxborder;
+      font-size: 22px;
+      font-weight: bold;
+      outline: none;
+      font-family: 'Atma', cursive;
+      box-sizing: border-box;
+      border-radius: 1px;
+    }
   .search-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 25px;
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      opacity: 0.7;
   }
 }
 
