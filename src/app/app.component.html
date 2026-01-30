@@ -1,70 +1,33 @@
 <div id="root">
   <div class="app-container">
-
     <header class="header">
       <h1>My Pokédex</h1>
     </header>
 
     <main class="pokedex-list">
-      <div
-        class="pokemon-card"
-        *ngFor="let p of myPokedex">
-
-        <button
-          class="close-btn"
-          aria-label="remove pokemon"
-          (click)="removePokemon(p.id)">
-          ✕
-        </button>
-
-        <img
-          [src]="p.imageUrl"
-          alt="pokemon"
-          class="card-img" />
-
+      <div class="pokemon-card" *ngFor="let p of myPokedex">
+        <button class="remove-btn" (click)="removePokemon(p.id)">X</button>
+        <img [src]="p.imageUrl" class="card-img" />
         <div class="card-content">
-          <h3 class="card-title">
-            {{ p.name | uppercase }}
-          </h3>
+          <h2 class="card-title">{{ p.name | uppercase }}</h2>
 
           <div class="stats-container">
             <div class="stat-row">
-              <span>HP</span>
-              <div class="bar-bg">
-                <div
-                  class="bar-fill"
-                  [style.width.%]="getHP(p)">
-                </div>
-              </div>
+              <span class="label">HP</span>
+              <div class="bar-bg"><div class="bar-fill" [style.width.%]="getHP(p)"></div></div>
             </div>
-
             <div class="stat-row">
-              <span>STR</span>
-              <div class="bar-bg">
-                <div
-                  class="bar-fill"
-                  [style.width.%]="getStrength(p)">
-                </div>
-              </div>
+              <span class="label">STR</span>
+              <div class="bar-bg"><div class="bar-fill" [style.width.%]="getStrength(p)"></div></div>
             </div>
-
             <div class="stat-row">
-              <span>WEAK</span>
-              <div class="bar-bg">
-                <div
-                  class="bar-fill"
-                  [style.width.%]="getWeakness(p)">
-                </div>
-              </div>
+              <span class="label">WEAK</span>
+              <div class="bar-bg"><div class="bar-fill" [style.width.%]="getWeakness(p)"></div></div>
             </div>
           </div>
 
           <div class="happiness-icons">
-            <img
-              *ngFor="let h of getHappinessArray(p)"
-              src="assets/cute.png"
-              alt="happiness"
-              class="happy-icon" />
+            <img *ngFor="let h of getHappinessArray(p)" src="assets/cute.png" class="happy-icon" />
           </div>
         </div>
       </div>
@@ -74,93 +37,42 @@
       <div class="plus-circle" (click)="openModal()">+</div>
     </footer>
 
-    <div
-      class="modal-overlay"
-      *ngIf="isModalOpen"
-      (click)="closeModal($event)">
-
-      <div
-        class="modal-content"
-        (click)="$event.stopPropagation()">
-
+    <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal($event)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="search-input-wrapper">
-          <input
-            type="text"
-            placeholder="Find Pokémon"
-            [(ngModel)]="searchName"
-            (input)="searchPokemon()" />
-          <img
-            src="assets/search.png"
-            class="search-icon" />
+          <input type="text" placeholder="Find Pokémon" [(ngModel)]="searchText" (input)="searchPokemon()" />
+          <img src="assets/search.png" class="search-icon" />
         </div>
 
         <div class="search-results">
-          <div
-            class="search-item"
-            *ngFor="let p of searchResult">
-
-            <img
-              [src]="p.imageUrl"
-              class="search-img" />
-
+          <div class="search-item" *ngFor="let p of searchResult">
+            <img [src]="p.imageUrl" class="search-img" />
             <div class="search-info">
               <div class="search-header">
                 <h3>{{ p.name | uppercase }}</h3>
-                <button
-                  class="add-text"
-                  (click)="addPokemon(p)">
-                  Add
-                </button>
+                <button class="add-btn" (click)="addPokemon(p)">Add</button>
               </div>
-
               <div class="stats-container">
                 <div class="stat-row">
-                  <span>HP</span>
-                  <div class="bar-bg">
-                    <div
-                      class="bar-fill"
-                      [style.width.%]="getHP(p)">
-                    </div>
-                  </div>
+                  <span class="label">HP</span>
+                  <div class="bar-bg"><div class="bar-fill" [style.width.%]="getHP(p)"></div></div>
                 </div>
-
                 <div class="stat-row">
-                  <span>STR</span>
-                  <div class="bar-bg">
-                    <div
-                      class="bar-fill"
-                      [style.width.%]="getStrength(p)">
-                    </div>
-                  </div>
+                  <span class="label">STR</span>
+                  <div class="bar-bg"><div class="bar-fill" [style.width.%]="getStrength(p)"></div></div>
                 </div>
-
                 <div class="stat-row">
-                  <span>WEAK</span>
-                  <div class="bar-bg">
-                    <div
-                      class="bar-fill"
-                      [style.width.%]="getWeakness(p)">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="happiness-icons">
-                  <img
-                    *ngFor="let h of getHappinessArray(p)"
-                    src="assets/cute.png"
-                    alt="happiness"
-                    class="happy-icon" />
+                  <span class="label">WEAK</span>
+                  <div class="bar-bg"><div class="bar-fill" [style.width.%]="getWeakness(p)"></div></div>
                 </div>
               </div>
+              <div class="happiness-icons">
+                <img *ngFor="let h of getHappinessArray(p)" src="assets/cute.png" class="happy-icon" />
+              </div>
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
-
-    <div class="click-circle" id="clickCircle"></div>
-
   </div>
 </div>

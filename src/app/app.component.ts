@@ -19,12 +19,11 @@ const COLORS: Record<string, string> = {
 interface Pokemon {
   id: string;
   name: string;
-  hp?: string;
+  hp: string;
   attacks?: { name: string; damage: string }[];
   weaknesses?: { type: string; value: string }[];
   imageUrl: string;
-  imageUrlHiRes?: string;
-  type?: string;
+  type: string;
 }
 
 @Component({
@@ -38,8 +37,7 @@ export class AppComponent {
   myPokedex: Pokemon[] = [];
   searchResult: Pokemon[] = [];
   isModalOpen = false;
-  searchName = '';
-  searchType = '';
+  searchText = '';
 
   constructor(private http: HttpClient) {}
 
@@ -49,69 +47,67 @@ export class AppComponent {
   }
 
   closeModal(event?: Event): void {
-    if (
-      !event ||
-      (event.target as HTMLElement).classList.contains('modal-overlay')
-    ) {
+    if (!event || (event.target as HTMLElement).classList.contains('modal-overlay')) {
       this.isModalOpen = false;
+      this.searchText = '';
     }
   }
 
   searchPokemon(): void {
-  this.http.get<any>('mock/cards.json').subscribe((res) => {
-    const cards = res.cards || [];
+    const url = `http://localhost:3030/api/cards?limit=30&name=${this.searchText.toLowerCase()}&type=${this.searchText.toLowerCase()}`;
 
-    this.searchResult = cards.filter(
-      (card: Pokemon) =>
-        !this.myPokedex.some((p) => p.id === card.id)
-    );
-  });
-}
+    this.http.get<{ cards: Pokemon[] }>(url).subscribe((res) => {
+      const cards = res.cards || [];
+      this.searchResult = cards.filter(
+        (card) => !this.myPokedex.some((p) => p.id === card.id)
+      );
+    });
+  }
 
   addPokemon(pokemon: Pokemon): void {
     this.myPokedex.push(pokemon);
-    this.searchResult = this.searchResult.filter(
-      (p) => p.id !== pokemon.id
-    );
+    this.searchResult = this.searchResult.filter((p) => p.id !== pokemon.id);
   }
 
   removePokemon(id: string): void {
     this.myPokedex = this.myPokedex.filter((p) => p.id !== id);
   }
 
-  getHP(pokemon: Pokemon): number {
-    const hp = parseInt(pokemon.hp || '0', 10);
-    return hp > 100 ? 100 : hp;
+  getHP(p: Pokemon): number {
+    const hp = parseInt(p.hp) || 0;
+    return hp > 100 ? 100 : hp < 0 ? 0 : hp;
   }
 
-  getStrength(pokemon: Pokemon): number {
-    const count = pokemon.attacks?.length || 0;
-    return Math.min(count * 50, 100);
+  getStrength(p: Pokemon): number {
+    const attacks = p.attacks?.length || 0;
+    const str = attacks * 50;
+    return str > 100 ? 100 : str;
   }
 
-  getWeakness(pokemon: Pokemon): number {
-    const count = pokemon.weaknesses?.length || 0;
-    return Math.min(count * 100, 100);
+  getWeakness(p: Pokemon): number {
+    const weaknesses = p.weaknesses?.length || 0;
+    const weak = weaknesses * 100;
+    return weak > 100 ? 100 : weak;
   }
 
-  getDamage(pokemon: Pokemon): number {
-    if (!pokemon.attacks) return 0;
-    return pokemon.attacks.reduce((total, atk) => {
-      const val = parseInt(atk.damage.replace(/[^0-9]/g, ''), 10) || 0;
+  getDamage(p: Pokemon): number {
+    if (!p.attacks) return 0;
+    return p.attacks.reduce((total, atk) => {
+      const val = parseInt(atk.damage.replace(/[^0-9]/g, '')) || 0;
       return total + val;
     }, 0);
   }
 
-  getHappiness(pokemon: Pokemon): number {
-    const hp = this.getHP(pokemon);
-    const damage = this.getDamage(pokemon);
-    const weakness = pokemon.weaknesses?.length || 0;
+  getHappiness(p: Pokemon): number {
+    const hp = this.getHP(p);
+    const damage = this.getDamage(p);
+    const weakness = (p.weaknesses?.length || 0) * 100 > 100 ? 100 : (p.weaknesses?.length || 0) * 100;
 
-    const happiness = ((hp / 10) + (damage / 10) + 10 - weakness) / 5;
-    return Math.max(0, Math.round(happiness));
+    const happiness = ((hp / 10) + (damage / 10) + 10 - (weakness / 100)) / 5;
+    return Math.max(0, Math.floor(happiness));
   }
 
-  getHappinessArray(pokemon: Pokemon): any[] {
-    return new Array(this.getHappiness(pokemon));
+  getHappinessArray(p: Pokemon): any[] {
+    return new Array(this.getHappiness(p));
   }
 }
