@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 const COLORS: Record<string, string> = {
@@ -14,7 +14,6 @@ const COLORS: Record<string, string> = {
   Colorless: '#ffffff',
   Fire: '#eb4d4b',
 };
-
 
 interface Pokemon {
   id: string;
@@ -40,6 +39,23 @@ export class AppComponent {
   searchText = '';
 
   constructor(private http: HttpClient) {}
+
+
+  @HostListener('document:click', ['$event'])
+  showRipple(event: MouseEvent): void {
+    const ripple = document.createElement('span');
+    ripple.className = 'click-ripple';
+
+    ripple.style.left = `${event.clientX}px`;
+    ripple.style.top = `${event.clientY}px`;
+
+    document.body.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 600);
+  }
+
 
   openModal(): void {
     this.isModalOpen = true;
@@ -75,19 +91,15 @@ export class AppComponent {
 
   getHP(p: Pokemon): number {
     const hp = parseInt(p.hp) || 0;
-    return hp > 100 ? 100 : hp < 0 ? 0 : hp;
+    return Math.min(Math.max(hp, 0), 100);
   }
 
   getStrength(p: Pokemon): number {
-    const attacks = p.attacks?.length || 0;
-    const str = attacks * 50;
-    return str > 100 ? 100 : str;
+    return Math.min((p.attacks?.length || 0) * 50, 100);
   }
 
   getWeakness(p: Pokemon): number {
-    const weaknesses = p.weaknesses?.length || 0;
-    const weak = weaknesses * 100;
-    return weak > 100 ? 100 : weak;
+    return Math.min((p.weaknesses?.length || 0) * 100, 100);
   }
 
   getDamage(p: Pokemon): number {
@@ -101,7 +113,7 @@ export class AppComponent {
   getHappiness(p: Pokemon): number {
     const hp = this.getHP(p);
     const damage = this.getDamage(p);
-    const weakness = (p.weaknesses?.length || 0) * 100 > 100 ? 100 : (p.weaknesses?.length || 0) * 100;
+    const weakness = this.getWeakness(p);
 
     const happiness = ((hp / 10) + (damage / 10) + 10 - (weakness / 100)) / 5;
     return Math.max(0, Math.floor(happiness));
