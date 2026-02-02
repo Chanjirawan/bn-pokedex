@@ -15,8 +15,7 @@
           ×
         </button>
 
-
-        <img [src]="p.imageUrl" class="card-img" />3
+        <img [src]="p.imageUrl" class="card-img" />
 
         <div class="card-content">
           <h2 class="card-title">{{ p.name | uppercase }}</h2>
@@ -94,9 +93,8 @@
 
                 <button
                   class="add-btn"
-                  (click)="addPokemon(p); showRipple($event)"
-                  (keydown.enter)="showRipple($event)"
-                  (keydown.space)="showRipple($event)"
+                  (click)="addPokemon(p)"
+
                 >
                   Add
                 </button>

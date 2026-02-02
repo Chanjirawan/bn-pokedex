@@ -40,35 +40,21 @@ export class AppComponent {
 
   constructor(private http: HttpClient) {}
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    this.createRipple(event.clientX, event.clientY);
-  }
+@HostListener('document:pointerdown', ['$event'])
+onPointerDown(event: PointerEvent): void {
+  const ripple = document.createElement('span');
+  ripple.className = 'click-ripple';
 
-  showRipple(event: Event): void {
-    let x = 0;
-    let y = 0;
+  ripple.style.left = `${event.clientX}px`;
+  ripple.style.top = `${event.clientY}px`;
 
-    if (event instanceof MouseEvent) {
-      x = event.clientX;
-      y = event.clientY;
-    } else if (event instanceof KeyboardEvent) {
-      x = window.innerWidth / 2;
-      y = window.innerHeight / 2;
-    }
+  document.body.appendChild(ripple);
 
-    this.createRipple(x, y);
-  }
+  setTimeout(() => {
+    ripple.remove();
+  }, 200);
+}
 
-  private createRipple(x: number, y: number): void {
-    const ripple = document.createElement('span');
-    ripple.className = 'click-ripple';
-    ripple.style.left = `${x}px`;
-    ripple.style.top = `${y}px`;
-
-    document.body.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 600);
-  }
 
   openModal(): void {
     this.isModalOpen = true;
@@ -81,6 +67,7 @@ export class AppComponent {
       this.searchText = '';
     }
   }
+
 
   searchPokemon(): void {
     const keyword = this.searchText.trim().toLowerCase();
@@ -114,7 +101,6 @@ export class AppComponent {
   removePokemon(id: string): void {
     this.myPokedex = this.myPokedex.filter((p) => p.id !== id);
   }
-
 
   getHP(p: Pokemon): number {
     const hp = parseInt(p.hp, 10) || 0;

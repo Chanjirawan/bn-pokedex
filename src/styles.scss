@@ -40,3 +40,18 @@ body {
   top: 50%;
   border: 1px inset #7b7b7b;
 }
+
+.click-ripple {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  background: transparent;
+  border: 4px solid black;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+
