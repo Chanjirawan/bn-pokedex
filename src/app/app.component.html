@@ -22,21 +22,21 @@
 
           <div class="stats-container">
             <div class="stat-row">
-              <span>HP</span>
+              <span class="stat-label">HP</span>
               <div class="bar-bg">
                 <div class="bar-fill" [style.width.%]="getHP(p)"></div>
               </div>
             </div>
 
             <div class="stat-row">
-              <span>STR</span>
+              <span class="stat-label">STR</span>
               <div class="bar-bg">
                 <div class="bar-fill" [style.width.%]="getStrength(p)"></div>
               </div>
             </div>
 
             <div class="stat-row">
-              <span>WEAK</span>
+              <span class="stat-label">WEAK</span>
               <div class="bar-bg">
                 <div class="bar-fill" [style.width.%]="getWeakness(p)"></div>
               </div>
@@ -76,7 +76,7 @@
         <div class="search-input-wrapper">
           <input
             type="text"
-            placeholder="Find Pokémon"
+            placeholder="Find Pokemon"
             [(ngModel)]="searchText"
             (input)="searchPokemon()"
           />
@@ -94,7 +94,6 @@
                 <button
                   class="add-btn"
                   (click)="addPokemon(p)"
-
                 >
                   Add
                 </button>
@@ -102,21 +101,21 @@
 
               <div class="stats-container">
                 <div class="stat-row">
-                  <span>HP</span>
+                  <span class="stat-label">HP</span>
                   <div class="bar-bg">
                     <div class="bar-fill" [style.width.%]="getHP(p)"></div>
                   </div>
                 </div>
 
                 <div class="stat-row">
-                  <span>STR</span>
+                  <span class="stat-label">STR</span>
                   <div class="bar-bg">
                     <div class="bar-fill" [style.width.%]="getStrength(p)"></div>
                   </div>
                 </div>
 
                 <div class="stat-row">
-                  <span>WEAK</span>
+                  <span class="stat-label">WEAK</span>
                   <div class="bar-bg">
                     <div class="bar-fill" [style.width.%]="getWeakness(p)"></div>
                   </div>
@@ -135,5 +134,6 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
