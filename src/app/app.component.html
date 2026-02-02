@@ -1,73 +1,138 @@
 <div id="root">
   <div class="app-container">
+
     <header class="header">
       <h1>My Pokédex</h1>
     </header>
 
     <main class="pokedex-list">
       <div class="pokemon-card" *ngFor="let p of myPokedex">
-        <button class="remove-btn" (click)="removePokemon(p.id)">X</button>
+        <!-- Remove button -->
+        <button
+          class="close-btn"
+          (click)="removePokemon(p.id)"
+          aria-label="Remove Pokémon"
+        >
+          ×
+        </button>
+
+
         <img [src]="p.imageUrl" class="card-img" />
+
         <div class="card-content">
           <h2 class="card-title">{{ p.name | uppercase }}</h2>
 
           <div class="stats-container">
             <div class="stat-row">
-              <span class="label">HP</span>
-              <div class="bar-bg"><div class="bar-fill" [style.width.%]="getHP(p)"></div></div>
+              <span>HP</span>
+              <div class="bar-bg">
+                <div class="bar-fill" [style.width.%]="getHP(p)"></div>
+              </div>
             </div>
+
             <div class="stat-row">
-              <span class="label">STR</span>
-              <div class="bar-bg"><div class="bar-fill" [style.width.%]="getStrength(p)"></div></div>
+              <span>STR</span>
+              <div class="bar-bg">
+                <div class="bar-fill" [style.width.%]="getStrength(p)"></div>
+              </div>
             </div>
+
             <div class="stat-row">
-              <span class="label">WEAK</span>
-              <div class="bar-bg"><div class="bar-fill" [style.width.%]="getWeakness(p)"></div></div>
+              <span>WEAK</span>
+              <div class="bar-bg">
+                <div class="bar-fill" [style.width.%]="getWeakness(p)"></div>
+              </div>
             </div>
           </div>
 
           <div class="happiness-icons">
-            <img *ngFor="let h of getHappinessArray(p)" src="assets/cute.png" class="happy-icon" />
+            <img
+              *ngFor="let h of getHappinessArray(p)"
+              src="assets/cute.png"
+              class="happy-icon"
+              alt="happiness"
+            />
           </div>
         </div>
       </div>
     </main>
 
     <footer class="bottom-bar">
-      <div class="plus-circle" (click)="openModal()">+</div>
+      <div
+        class="plus-circle"
+        (click)="openModal()"
+        tabindex="0"
+        role="button"
+        aria-label="Add Pokémon"
+      >
+        +
+      </div>
     </footer>
 
-    <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal($event)">
+    <div
+      class="modal-overlay"
+      *ngIf="isModalOpen"
+      (click)="closeModal($event)"
+    >
       <div class="modal-content" (click)="$event.stopPropagation()">
+        <!-- Search -->
         <div class="search-input-wrapper">
-          <input type="text" placeholder="Find Pokémon" [(ngModel)]="searchText" (input)="searchPokemon()" />
+          <input
+            type="text"
+            placeholder="Find Pokémon"
+            [(ngModel)]="searchText"
+            (input)="searchPokemon()"
+          />
           <img src="assets/search.png" class="search-icon" />
         </div>
 
         <div class="search-results">
           <div class="search-item" *ngFor="let p of searchResult">
             <img [src]="p.imageUrl" class="search-img" />
+
             <div class="search-info">
               <div class="search-header">
                 <h3>{{ p.name | uppercase }}</h3>
-                <button class="add-btn" (click)="addPokemon(p)">Add</button>
+
+                <button
+                  class="add-btn"
+                  (click)="addPokemon(p); showRipple($event)"
+                  (keydown.enter)="showRipple($event)"
+                  (keydown.space)="showRipple($event)"
+                >
+                  Add
+                </button>
               </div>
+
               <div class="stats-container">
                 <div class="stat-row">
-                  <span class="label">HP</span>
-                  <div class="bar-bg"><div class="bar-fill" [style.width.%]="getHP(p)"></div></div>
+                  <span>HP</span>
+                  <div class="bar-bg">
+                    <div class="bar-fill" [style.width.%]="getHP(p)"></div>
+                  </div>
                 </div>
+
                 <div class="stat-row">
-                  <span class="label">STR</span>
-                  <div class="bar-bg"><div class="bar-fill" [style.width.%]="getStrength(p)"></div></div>
+                  <span>STR</span>
+                  <div class="bar-bg">
+                    <div class="bar-fill" [style.width.%]="getStrength(p)"></div>
+                  </div>
                 </div>
+
                 <div class="stat-row">
-                  <span class="label">WEAK</span>
-                  <div class="bar-bg"><div class="bar-fill" [style.width.%]="getWeakness(p)"></div></div>
+                  <span>WEAK</span>
+                  <div class="bar-bg">
+                    <div class="bar-fill" [style.width.%]="getWeakness(p)"></div>
+                  </div>
                 </div>
               </div>
+
               <div class="happiness-icons">
-                <img *ngFor="let h of getHappinessArray(p)" src="assets/cute.png" class="happy-icon" />
+                <img
+                  *ngFor="let h of getHappinessArray(p)"
+                  src="assets/cute.png"
+                  class="happy-icon"
+                />
               </div>
             </div>
           </div>

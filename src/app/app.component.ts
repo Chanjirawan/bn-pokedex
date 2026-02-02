@@ -40,22 +40,35 @@ export class AppComponent {
 
   constructor(private http: HttpClient) {}
 
-
   @HostListener('document:click', ['$event'])
-  showRipple(event: MouseEvent): void {
-    const ripple = document.createElement('span');
-    ripple.className = 'click-ripple';
-
-    ripple.style.left = `${event.clientX}px`;
-    ripple.style.top = `${event.clientY}px`;
-
-    document.body.appendChild(ripple);
-
-    setTimeout(() => {
-      ripple.remove();
-    }, 600);
+  onDocumentClick(event: MouseEvent) {
+    this.createRipple(event.clientX, event.clientY);
   }
 
+  showRipple(event: Event): void {
+    let x = 0;
+    let y = 0;
+
+    if (event instanceof MouseEvent) {
+      x = event.clientX;
+      y = event.clientY;
+    } else if (event instanceof KeyboardEvent) {
+      x = window.innerWidth / 2;
+      y = window.innerHeight / 2;
+    }
+
+    this.createRipple(x, y);
+  }
+
+  private createRipple(x: number, y: number): void {
+    const ripple = document.createElement('span');
+    ripple.className = 'click-ripple';
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }
 
   openModal(): void {
     this.isModalOpen = true;
@@ -70,7 +83,20 @@ export class AppComponent {
   }
 
   searchPokemon(): void {
-    const url = `http://localhost:3030/api/cards?limit=30&name=${this.searchText.toLowerCase()}&type=${this.searchText.toLowerCase()}`;
+    const keyword = this.searchText.trim().toLowerCase();
+
+    const types = [
+      'fire', 'water', 'grass', 'psychic', 'fighting',
+      'fairy', 'normal', 'metal', 'darkness', 'lightning'
+    ];
+
+    let url = `http://localhost:3030/api/cards?limit=30`;
+
+    if (types.includes(keyword)) {
+      url += `&type=${keyword}`;
+    } else {
+      url += `&name=${keyword}`;
+    }
 
     this.http.get<{ cards: Pokemon[] }>(url).subscribe((res) => {
       const cards = res.cards || [];
@@ -89,8 +115,9 @@ export class AppComponent {
     this.myPokedex = this.myPokedex.filter((p) => p.id !== id);
   }
 
+
   getHP(p: Pokemon): number {
-    const hp = parseInt(p.hp) || 0;
+    const hp = parseInt(p.hp, 10) || 0;
     return Math.min(Math.max(hp, 0), 100);
   }
 
@@ -104,9 +131,9 @@ export class AppComponent {
 
   getDamage(p: Pokemon): number {
     if (!p.attacks) return 0;
-    return p.attacks.reduce((total, atk) => {
-      const val = parseInt(atk.damage.replace(/[^0-9]/g, '')) || 0;
-      return total + val;
+    return p.attacks.reduce((sum, atk) => {
+      const dmg = parseInt(atk.damage.replace(/[^0-9]/g, ''), 10) || 0;
+      return sum + dmg;
     }, 0);
   }
 
@@ -119,7 +146,7 @@ export class AppComponent {
     return Math.max(0, Math.floor(happiness));
   }
 
-  getHappinessArray(p: Pokemon): any[] {
-    return new Array(this.getHappiness(p));
+  getHappinessArray(p: Pokemon): number[] {
+    return Array(this.getHappiness(p)).fill(0);
   }
 }
