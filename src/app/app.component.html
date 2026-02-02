@@ -7,7 +7,6 @@
 
     <main class="pokedex-list">
       <div class="pokemon-card" *ngFor="let p of myPokedex">
-        <!-- Remove button -->
         <button
           class="close-btn"
           (click)="removePokemon(p.id)"
@@ -75,7 +74,6 @@
       (click)="closeModal($event)"
     >
       <div class="modal-content" (click)="$event.stopPropagation()">
-        <!-- Search -->
         <div class="search-input-wrapper">
           <input
             type="text"
